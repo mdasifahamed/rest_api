@@ -2,8 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
+const lodash = require("lodash")
 const app = express();
-
+//// !!!!!!! An Important Note All Testing Done Here Using Postman api Software Because Here No Html Templte is Used Here!!!////
+//// !!!!!!! Every User input Id Given to The Database Using PostMan Api Software software And Some Input Was given by default !!!!!!////
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
@@ -100,17 +102,20 @@ app.route("/articles/:articletittle")
   });
 })
 
-//// post methods will create the specific property or attribute of a document or object /////
-//// Note: Herer Titttel name will that name that has been used in the url after article/... because we are tapping from article/:articletittle the articletittle as req.body.articletittle /////
-.post(function(req,res){
-  const requestedtittle = req.body.tittle;
-  Article.create({tittle:requestedtittle, content: req.body.content},function(err,result){ // to create an user defined article using moongose create and it will store the data to the datatbase
-    if(!err){
-      res.send("Succesfully Added The Article")
-    }else{
-      res.send("Failed To Add The Article")
-    }
-  });
+////here this post method with post params will create new article the given tittle and article from user and it store it in th database /////
+app.post("/article/:id",function(req,res){
+  const requestedid = lodash.toUpper(req.body.id);
+  if (requestedid === "POST"){
+    Article.create({tittle:req.body.tittle, content: req.body.content},function(err, results){
+      if(!err){
+        res.send("Successfully Added The Article");
+      }else{
+        res.send("Failed Add The Article")
+      }
+    })
+  } else {
+    console.log("Wrong Url");
+  }
 });
 
 app.listen(3000, function(req, res){
